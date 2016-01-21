@@ -1,0 +1,23 @@
+{
+  "name": "mysubdb",
+  "version": "0.0.1",
+  "description": "my sub db",
+  "main": "main.js",
+  "dependencies": {
+    "subdb": "0.0.2"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "node main.js temp/"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Pingpouff/test.git"
+  },
+  "author": "DDI",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Pingpouff/test/issues"
+  },
+  "homepage": "https://github.com/Pingpouff/test#readme"
+}
