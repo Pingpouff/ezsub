@@ -16,6 +16,8 @@
   },
   "author": "DDI",
   "license": "ISC",
+  "preferGlobal": true,
+  "bin": { "mysubdb": "main.js" },
   "bugs": {
     "url": "https://github.com/Pingpouff/test/issues"
   },
