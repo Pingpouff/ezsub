@@ -2,7 +2,6 @@
   "name": "mysubdb",
   "version": "0.0.1",
   "description": "my sub db",
-  "main": "main.js",
   "dependencies": {
     "subdb": "0.0.2"
   },
@@ -17,7 +16,7 @@
   "author": "DDI",
   "license": "ISC",
   "preferGlobal": true,
-  "bin": { "mysubdb": "main.js" },
+  "bin": { "dlsub": "main.js" },
   "bugs": {
     "url": "https://github.com/Pingpouff/test/issues"
   },

@@ -1,3 +1,4 @@
+#!/usr/bin/env node
 var SubDb = require("subdb");
 var fs = require("fs");
 var path = require("path");
