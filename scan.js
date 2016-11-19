@@ -63,16 +63,24 @@ var isWithinAWeek = function (fileDate) {
     return result;
 }
 
-var askToDl = function () {
+var askToDl = function (yesCb, noCb) {
     var inquire = require('inquirer');
     inquire.prompt([
         {
             type: 'input',
             name: 'dl',
-            message: 'Do you want to dl?'
+            message: 'Do you want to dl? y/n'
         }], function (answers) {
-        console.log(JSON.stringify(answers));
-    });
+            if (answers.dl === 'y' || answers.dl === 'yes') {
+                console.log('lets go!');
+                yesCb();
+            } else if (answers.dl === 'n' || answers.dl === 'no') {
+                noCb();
+            } else {
+                console.log('Unrecognized answer.')
+                askToDl(yesCb, noCb);
+            }
+        });
 }
 
 var dlDirSubDeep = function (pathArgument) {
@@ -87,7 +95,13 @@ var dlDirSubDeep = function (pathArgument) {
             if (isVideoExt(fileExt) && isWithinAWeek(fs.lstatSync(pathArgument).mtime) && !hasSub(currentPath)) {
                 //console.log('dlsub for: ' + currentPath);
                 //getSubFileFor(currentPath);
-                askToDl()
+                var yesCb = function() {
+                    getSubFileFor(currentPath);
+                };
+                var noCb = function() {
+                    console.log('Dl aborded. Good bye.')
+                }
+                askToDl(yesCb, noCb);
             }
         }
         //console.log(fileExt);
