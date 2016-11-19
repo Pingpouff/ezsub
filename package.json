@@ -3,6 +3,8 @@
   "version": "0.0.1",
   "description": "my sub db",
   "dependencies": {
+    "inquirer": "^0.12.0",
+    "moment": "^2.12.0",
     "subdb": "0.0.2"
   },
   "devDependencies": {},
@@ -16,7 +18,10 @@
   "author": "DDI",
   "license": "ISC",
   "preferGlobal": true,
-  "bin": { "dlsub": "main.js" },
+  "bin": {
+    "dlsub": "main.js",
+    "scansub": "scan.js"
+  },
   "bugs": {
     "url": "https://github.com/Pingpouff/test/issues"
   },
