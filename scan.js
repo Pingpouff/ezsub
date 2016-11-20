@@ -23,9 +23,9 @@ var getSubFileFor = function (filePath) {
 
             if (err) return err;
             console.log("Search done.");
-            var subFileName = path.dirname(path.resolve(filePath)) + "/" + path.basename(filePath, path.extname(filePath)) + '.srt';
-            console.log("Downloading file for: " + subFileName);
             if (res.indexOf('en') > -1) {
+                var subFileName = path.dirname(path.resolve(filePath)) + "/" + path.basename(filePath, path.extname(filePath)) + '.srt';
+                console.log("Downloading file for: " + subFileName);
                 subdb.api.download_subtitle(hash, 'en', subFileName, function (err, res) {
                     if (err) return err;
 
@@ -33,7 +33,7 @@ var getSubFileFor = function (filePath) {
                     console.log("Subtitle downloaded.");
                 });
             } else {
-                console.log("No EN subtitle found.")
+                console.log("No EN subtitle found for:" + filePath)
             }
         });
     });
@@ -63,13 +63,14 @@ var isWithinAWeek = function (fileDate) {
     return result;
 }
 
-var askToDl = function (yesCb, noCb) {
+// TERMINAL INTERACTION
+var askToDl = function (fileName, yesCb, noCb) {
     var inquire = require('inquirer');
     inquire.prompt([
         {
             type: 'input',
             name: 'dl',
-            message: 'Do you want to dl? y/n'
+            message: 'Do you want to dl:' + fileName + '? y/n'
         }], function (answers) {
             if (answers.dl === 'y' || answers.dl === 'yes') {
                 console.log('lets go!');
@@ -88,30 +89,28 @@ var dlDirSubDeep = function (pathArgument) {
     fs.readdirSync(pathArgument).forEach(function (file) {
         var currentPath = path.join(pathArgument, file);
         if (fs.lstatSync(currentPath).isDirectory()) {
-            //console.log('> ' + currentPath);
             dlDirSubDeep(currentPath);
         } else {
             var fileExt = path.extname(file);
             if (isVideoExt(fileExt) && isWithinAWeek(fs.lstatSync(pathArgument).mtime) && !hasSub(currentPath)) {
-                //console.log('dlsub for: ' + currentPath);
                 //getSubFileFor(currentPath);
-                var yesCb = function() {
+                var yesCb = function () {
                     getSubFileFor(currentPath);
                 };
-                var noCb = function() {
+                var noCb = function () {
                     console.log('Dl aborded. Good bye.')
                 }
-                askToDl(yesCb, noCb);
+                askToDl(file, yesCb, noCb);
             }
         }
-        //console.log(fileExt);
     });
+    console.log('scan ended.');
 }
 
 
 // Manage directory param
 if (fs.lstatSync(pathArgument).isDirectory()) {
-    console.log("Directory found!!!");
+    console.log("Directory scan in progress...");
     dlDirSubDeep(pathArgument)
 } else {
     getSubFileFor(pathArgument);
