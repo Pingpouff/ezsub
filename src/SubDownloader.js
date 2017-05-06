@@ -17,7 +17,9 @@ const download = function (filePath) {
 				if (err) return err;
 				console.log("Search done.");
 				if (res.indexOf('en') > -1) {
-					var subFileName = path.dirname(path.resolve(filePath)) + "/" + path.basename(filePath, path.extname(filePath)) + '.srt';
+					var path = require("path");
+					var subFileName = path.dirname(path.resolve(filePath))
+										+ "/" + path.basename(filePath, path.extname(filePath)) + '.srt';
 					console.log("Downloading file for: " + subFileName);
 					subdb.api.download_subtitle(hash, 'en', subFileName, function (err, res) {
 						if (err) return err;

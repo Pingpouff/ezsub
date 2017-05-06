@@ -11,7 +11,7 @@ var subdb = new SubDb();
 var pathArgument = path.resolve(process.argv[2]);
 
 var getSubFileFor = function (filePath) {
-	SubDownloader.download;
+	SubDownloader.download(filePath);
 };
 
 // DATE FILTERING (not working)
@@ -58,7 +58,7 @@ var dlDirSubDeep = function (pathArgument, files) {
 
 // Manage directory param
 if (fs.lstatSync(pathArgument).isDirectory()) {
-	console.log("Directory scan in progress...");
+	console.log("Scanning " + pathArgument + " directory...");
 	var filesMap = new Map();
 	dlDirSubDeep(pathArgument, filesMap);
 	var processCb = function (files) {
@@ -66,7 +66,7 @@ if (fs.lstatSync(pathArgument).isDirectory()) {
 			getSubFileFor(filesMap.get(name));
 		});
 	};
-	console.log(JSON.stringify(filesMap.keys()));
+	// console.log(JSON.stringify(filesMap.keys()));
 	if (filesMap.size > 0) {
 		askToDl([...filesMap.keys()], processCb);
 	} else {
