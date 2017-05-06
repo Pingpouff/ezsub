@@ -4,51 +4,15 @@ var SubDb = require("subdb");
 var fs = require("fs");
 var path = require("path");
 var moment = require("moment");
+var MediaFileUtil = require("./src/MediaFileUtil");
+var SubDownloader = require("./src/SubDownloader");
 
 var subdb = new SubDb();
 var pathArgument = path.resolve(process.argv[2]);
 
 var getSubFileFor = function (filePath) {
-    console.log("Hashing file at: " + filePath);
-    subdb.computeHash(filePath, function (err, res) {
-        if (err) {
-            console.log(err);
-            return err;
-        }
-        console.log("Hash done.");
-        var hash = res;
-        console.log("Searching...");
-        subdb.api.search_subtitles(hash, function (err, res) {
-
-            if (err) return err;
-            console.log("Search done.");
-            if (res.indexOf('en') > -1) {
-                var subFileName = path.dirname(path.resolve(filePath)) + "/" + path.basename(filePath, path.extname(filePath)) + '.srt';
-                console.log("Downloading file for: " + subFileName);
-                subdb.api.download_subtitle(hash, 'en', subFileName, function (err, res) {
-                    if (err) return err;
-
-                    // sub is normally fetched into pathtosub.srt
-                    console.log("Subtitle downloaded.");
-                });
-            } else {
-                console.log("No EN subtitle found for:" + filePath)
-            }
-        });
-    });
+    SubDownloader.download;
 };
-
-var isVideoExt = function (fileExt) {
-    var vidExt = ['.avi', '.mkv', '.mp4'];
-    return vidExt.indexOf(fileExt) > -1;
-}
-
-var hasSub = function (filePath) {
-    var srtName = path.basename(filePath, path.extname(filePath)) + '.srt';
-    var srtPath = path.join(path.dirname(filePath), srtName);
-    //console.log('No srt for file: ' + filePath);
-    return fs.existsSync(srtPath);
-}
 
 // DATE FILTERING (not working)
 var today = moment();
@@ -84,7 +48,7 @@ var dlDirSubDeep = function (pathArgument, files) {
             dlDirSubDeep(currentPath, files);
         } else {
             var fileExt = path.extname(file);
-            if (isVideoExt(fileExt) && isWithinAWeek(fs.lstatSync(pathArgument).mtime) && !hasSub(currentPath)) {
+            if (MediaFileUtil.isVideoExt(fileExt) && isWithinAWeek(fs.lstatSync(pathArgument).mtime) && !MediaFileUtil.hasSub(currentPath)) {
                 files.set(file, currentPath);
             }
         }

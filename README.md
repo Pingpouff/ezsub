@@ -5,3 +5,4 @@ launch the scan: `node scan {directory path}`
 - add a logger library
 - slip files
 - scan with async fs
+- change to typescript and webpack
