@@ -11,68 +11,68 @@ var subdb = new SubDb();
 var pathArgument = path.resolve(process.argv[2]);
 
 var getSubFileFor = function (filePath) {
-    SubDownloader.download;
+	SubDownloader.download;
 };
 
 // DATE FILTERING (not working)
 var today = moment();
 var A_WEEK_OLD = today.subtract(7, 'days').startOf('day');
 var isWithinAWeek = function (fileDate) {
-    var date = moment(fileDate);
-    var result = date.isAfter(A_WEEK_OLD);
-    //console.log("date:" + fileDate);
-    //console.log("datediff:" + date.fromNow());
-    //console.log("isWithinAWeek?" + result);
-    return result;
+	var date = moment(fileDate);
+	var result = date.isAfter(A_WEEK_OLD);
+	//console.log("date:" + fileDate);
+	//console.log("datediff:" + date.fromNow());
+	//console.log("isWithinAWeek?" + result);
+	return result;
 }
 
 // TERMINAL INTERACTION
 var askToDl = function (files, processCb) {
-    var inquire = require('inquirer');
-    inquire.prompt([
-        {
-            type: 'checkbox',
-            name: 'files',
-            message: 'Select files of which to dl subtitle:',
-            choices: files
-        }], function (answers) {
-            processCb(answers.files);
-        });
+	var inquire = require('inquirer');
+	inquire.prompt([
+		{
+			type: 'checkbox',
+			name: 'files',
+			message: 'Select files of which to dl subtitle:',
+			choices: files
+		}], function (answers) {
+			processCb(answers.files);
+		});
 }
 
 var dlDirSubDeep = function (pathArgument, files) {
-    // TODO use async call + promise
-    fs.readdirSync(pathArgument).forEach(function (file) {
-        var currentPath = path.join(pathArgument, file);
-        if (fs.lstatSync(currentPath).isDirectory()) {
-            dlDirSubDeep(currentPath, files);
-        } else {
-            var fileExt = path.extname(file);
-            if (MediaFileUtil.isVideoExt(fileExt) && isWithinAWeek(fs.lstatSync(pathArgument).mtime) && !MediaFileUtil.hasSub(currentPath)) {
-                files.set(file, currentPath);
-            }
-        }
-    });
+	// TODO use async call + promise
+	fs.readdirSync(pathArgument).forEach(function (file) {
+		var currentPath = path.join(pathArgument, file);
+		if (fs.lstatSync(currentPath).isDirectory()) {
+			dlDirSubDeep(currentPath, files);
+		} else {
+			var fileExt = path.extname(file);
+			if (MediaFileUtil.isVideoExt(fileExt) && isWithinAWeek(fs.lstatSync(pathArgument).mtime) && !MediaFileUtil.hasSub(currentPath)) {
+				files.set(file, currentPath);
+			}
+		}
+	});
 }
 
 
 // Manage directory param
 if (fs.lstatSync(pathArgument).isDirectory()) {
-    console.log("Directory scan in progress...");
-    var filesMap = new Map();
-    dlDirSubDeep(pathArgument, filesMap);
-    var processCb = function (files) {
-        files.forEach(function (name) {
-            getSubFileFor(filesMap.get(name));
-        });
-    };
-    console.log(JSON.stringify(filesMap.keys()));
-    if (filesMap.size > 0) {
-        askToDl([...filesMap.keys()], processCb);
-    } else {
-        console.log('No file to process');
-    }
-    console.log('The END.');
+	console.log("Directory scan in progress...");
+	var filesMap = new Map();
+	dlDirSubDeep(pathArgument, filesMap);
+	var processCb = function (files) {
+		files.forEach(function (name) {
+			getSubFileFor(filesMap.get(name));
+		});
+	};
+	console.log(JSON.stringify(filesMap.keys()));
+	if (filesMap.size > 0) {
+		askToDl([...filesMap.keys()], processCb);
+	} else {
+		console.log('No file to process');
+	}
+	console.log('The END.');
 } else {
-    getSubFileFor(pathArgument);
+	getSubFileFor(pathArgument);
 }
